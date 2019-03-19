@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/users');
-const User = require('./database/models/User');
+const decorator = require('./database/decorator');
 
 // data vars
 const PORT = process.env.PORT;
@@ -17,11 +17,8 @@ if (!PORT || !SESSION_SECRET || !REDIS_HOSTNAME) { return process.exit(1); }
 const app = express();
 app.use(bodyParser.json({ extended: true }));
 
-// decorate request
-app.use((req, res, next) => {
-  req.database = { User };
-  next();
-});
+// decorate request with database
+app.use(decorator);
 
 // routes
 app.use('/api', userRoutes);
